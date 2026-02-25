@@ -1,0 +1,8 @@
+{
+  "secoes": [
+    { "id": 1, "nome": "Hortifruti" },
+    { "id": 2, "nome": "Bebidas" },
+    { "id": 3, "nome": "Limpeza" },
+    { "id": 4, "nome": "Padaria" }
+  ]
+}

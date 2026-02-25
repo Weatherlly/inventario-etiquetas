@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventário Ativo</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Contagem em Aberto</h1>
+            <button onclick="location.href='hub.html'" class="btn-outline">Voltar ao Hub</button>
+        </header>
+
+        <div class="card" style="padding:0">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Seção</th>
+                        <th>Última</th>
+                        <th>Atual</th>
+                        <th>Dif.</th>
+                        <th>Ação</th>
+                    </tr>
+                </thead>
+                <tbody id="tabela-corpo"></tbody>
+            </table>
+        </div>
+
+        <button onclick="finalizar()" class="btn-success" style="width:100%; padding:18px; font-size:1rem; margin-top:10px;">Finalizar e Salvar Tudo</button>
+    </div>
+
+    <div id="modalContagem" class="modal">
+        <div class="modal-content">
+            <h2 id="modal-titulo"></h2>
+            <input type="hidden" id="modal-id-secao">
+            <div id="linhas-prateleira"></div>
+            <button onclick="adicionarLinha()" class="btn-outline" style="width:100%; margin: 15px 0;">+ Adicionar Prateleira</button>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px">
+                <button onclick="fecharModal()" class="btn-outline">Cancelar</button>
+                <button onclick="salvarModal()" class="btn-primary">Salvar Seção</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

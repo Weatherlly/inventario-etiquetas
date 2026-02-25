@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hub de Inventário</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📦 Gestão de Inventário</h1>
+        </header>
+
+        <div id="status-card" class="card card-status">
+            </div>
+
+        <h3>Histórico de Inventários</h3>
+        <div class="card" style="padding:0">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Data do Fechamento</th>
+                        <th style="text-align:right">Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="lista-historico"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="modalView" class="modal">
+        <div class="modal-content">
+            <h2 id="view-titulo">Resumo do Inventário</h2>
+            <div id="view-corpo" style="max-height: 400px; overflow-y: auto;"></div>
+            <div style="margin-top:20px; text-align:right">
+                <button onclick="fecharModal()" class="btn-outline">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let historicoCompleto = [];
+
+        async function init() {
+            const res = await fetch('/api/hub-status');
+            const data = await res.json();
+            historicoCompleto = data.historico;
+
+            const card = document.getElementById('status-card');
+            if(data.rodando) {
+                card.innerHTML = `
+                    <span class="badge status-rodando">EM ANDAMENTO</span>
+                    <p>Você tem um inventário aberto no momento.</p>
+                    <button onclick="location.href='index.html'" class="btn-primary">Continuar Inventário</button>
+                `;
+            } else {
+                card.innerHTML = `
+                    <span class="badge status-limpo">SISTEMA LIVRE</span>
+                    <p>Nenhum inventário ativo.</p>
+                    <button onclick="location.href='index.html'" class="btn-success">Iniciar Novo Registro</button>
+                `;
+            }
+
+            document.getElementById('lista-historico').innerHTML = data.historico.map(h => `
+                <tr>
+                    <td><strong>${h.data}</strong></td>
+                    <td style="text-align:right">
+                        <button class="btn-outline" onclick="abrirView(${h.id})">🔍 Ver</button>
+                        <button class="btn-outline" onclick="location.href='/api/exportar-csv?id=${h.id}'">📥 CSV</button>
+                    </td>
+                </tr>
+            `).join('') || '<tr><td colspan="2" style="text-align:center; padding:40px; color:#94a3b8">Nenhum histórico disponível</td></tr>';
+        }
+
+        function abrirView(id) {
+            const inv = historicoCompleto.find(x => x.id === id);
+            document.getElementById('view-titulo').innerText = `Inventário: ${inv.data}`;
+            document.getElementById('view-corpo').innerHTML = inv.dados.map(d => `
+                <div style="padding: 12px; border-bottom: 1px solid #f1f5f9">
+                    <div style="display:flex; justify-content:space-between">
+                        <strong>${d.secao}</strong>
+                        <span>Total: ${d.total}</span>
+                    </div>
+                </div>
+            `).join('');
+            document.getElementById('modalView').style.display = 'block';
+        }
+
+        function fecharModal() { document.getElementById('modalView').style.display = 'none'; }
+        
+        init();
+    </script>
+</body>
+</html>
