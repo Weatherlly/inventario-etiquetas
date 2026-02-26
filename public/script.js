@@ -35,15 +35,19 @@ function adicionarLinha(nome='', qtd=0, status='Funcionando') {
     const div = document.createElement('div');
     div.className = 'linha-input';
     div.innerHTML = `
-        <input type="text" placeholder="Prateleira" class="p-nome" value="${nome}">
-        <input type="number" placeholder="Qtd" class="p-qtd" value="${qtd}">
+        <input type="text" placeholder="Prat." class="p-nome" value="${nome}">
+        <input type="number" placeholder="Qtd" class="p-qtd" value="${qtd}" inputmode="numeric">
         <select class="p-status">
             <option value="Funcionando" ${status==='Funcionando'?'selected':''}>OK</option>
-            <option value="Quebrada" ${status==='Quebrada'?'selected':''}>⚠️ Quebrada</option>
+            <option value="Quebrada" ${status==='Quebrada'?'selected':''}>FALHA</option>
         </select>
-        <button onclick="this.parentElement.remove()" style="color:red; background:none; font-size:1.2rem">×</button>
+        <button onclick="this.parentElement.remove()" style="color:var(--danger); background:none; font-size:1.5rem; padding:0 5px;">&times;</button>
     `;
     document.getElementById('linhas-prateleira').appendChild(div);
+    
+    // Auto-scroll para a nova linha adicionada
+    const container = document.getElementById('linhas-prateleira');
+    container.scrollTop = container.scrollHeight;
 }
 
 async function salvarModal() {

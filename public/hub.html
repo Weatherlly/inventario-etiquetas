@@ -12,15 +12,18 @@
             <h1>📦 Gestão de Inventário</h1>
         </header>
 
-        <div id="status-card" class="card card-status">
-            </div>
+        <div id="status-card" class="card card-status"></div>
 
-        <h3>Histórico de Inventários</h3>
-        <div class="card" style="padding:0">
+        <div style="display:flex; justify-content: space-between; align-items: center; margin-top: 30px;">
+            <h3>Histórico de Inventários</h3>
+            <button onclick="limparInventarioAtual()" class="btn-outline" style="color:var(--danger); border-color:var(--danger)">🗑️ Limpar Rascunho Atual</button>
+        </div>
+
+        <div class="card" style="padding:0; margin-top:10px;">
             <table>
                 <thead>
                     <tr>
-                        <th>Data do Fechamento</th>
+                        <th>Data</th>
                         <th style="text-align:right">Ações</th>
                     </tr>
                 </thead>
@@ -29,66 +32,63 @@
         </div>
     </div>
 
-    <div id="modalView" class="modal">
-        <div class="modal-content">
-            <h2 id="view-titulo">Resumo do Inventário</h2>
-            <div id="view-corpo" style="max-height: 400px; overflow-y: auto;"></div>
-            <div style="margin-top:20px; text-align:right">
-                <button onclick="fecharModal()" class="btn-outline">Fechar</button>
-            </div>
-        </div>
-    </div>
-
     <script>
-        let historicoCompleto = [];
-
         async function init() {
             const res = await fetch('/api/hub-status');
             const data = await res.json();
-            historicoCompleto = data.historico;
-
+            
             const card = document.getElementById('status-card');
-            if(data.rodando) {
-                card.innerHTML = `
-                    <span class="badge status-rodando">EM ANDAMENTO</span>
-                    <p>Você tem um inventário aberto no momento.</p>
-                    <button onclick="location.href='index.html'" class="btn-primary">Continuar Inventário</button>
-                `;
-            } else {
-                card.innerHTML = `
-                    <span class="badge status-limpo">SISTEMA LIVRE</span>
-                    <p>Nenhum inventário ativo.</p>
-                    <button onclick="location.href='index.html'" class="btn-success">Iniciar Novo Registro</button>
-                `;
-            }
+            card.innerHTML = data.rodando
+                ? `<span class="badge status-rodando">EM ANDAMENTO</span><p>Inventário aberto detectado.</p><button onclick="location.href='index.html'" class="btn-primary">Continuar</button>`
+                : `<span class="badge status-limpo">SISTEMA LIVRE</span><p>Pronto para novo inventário.</p><button onclick="location.href='index.html'" class="btn-success">Iniciar Novo</button>`;
 
             document.getElementById('lista-historico').innerHTML = data.historico.map(h => `
                 <tr>
                     <td><strong>${h.data}</strong></td>
                     <td style="text-align:right">
-                        <button class="btn-outline" onclick="abrirView(${h.id})">🔍 Ver</button>
                         <button class="btn-outline" onclick="location.href='/api/exportar-csv?id=${h.id}'">📥 CSV</button>
+                        <button class="btn-outline" style="color:var(--danger)" onclick="excluirHistorico(${h.id})">🗑️</button>
                     </td>
                 </tr>
-            `).join('') || '<tr><td colspan="2" style="text-align:center; padding:40px; color:#94a3b8">Nenhum histórico disponível</td></tr>';
+            `).join('') || '<tr><td colspan="2" style="text-align:center; padding:20px;">Vazio</td></tr>';
         }
 
-        function abrirView(id) {
-            const inv = historicoCompleto.find(x => x.id === id);
-            document.getElementById('view-titulo').innerText = `Inventário: ${inv.data}`;
-            document.getElementById('view-corpo').innerHTML = inv.dados.map(d => `
-                <div style="padding: 12px; border-bottom: 1px solid #f1f5f9">
-                    <div style="display:flex; justify-content:space-between">
-                        <strong>${d.secao}</strong>
-                        <span>Total: ${d.total}</span>
-                    </div>
-                </div>
-            `).join('');
-            document.getElementById('modalView').style.display = 'block';
+        async function limparInventarioAtual() {
+            const senha = prompt("Digite a senha de administrador para limpar o inventário em andamento:");
+            if (!senha) return;
+
+            const res = await fetch('/api/admin/limpar-atual', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ password: senha })
+            });
+
+            if (res.ok) {
+                alert("Rascunho atual removido!");
+                init();
+            } else {
+                alert("Senha incorreta!");
+            }
         }
 
-        function fecharModal() { document.getElementById('modalView').style.display = 'none'; }
-        
+        async function excluirHistorico(id) {
+            const senha = prompt("Confirme a senha para excluir este registro permanentemente:");
+            if (!senha) return;
+
+            const res = await fetch('/api/admin/excluir-historico', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ password: senha, id: id })
+            });
+
+            if (res.ok) {
+                alert("Registro excluído com sucesso!");
+                init();
+            } else {
+                alert("Senha incorreta!");
+            }
+        }
+
         init();
     </script>
 </body>

@@ -38,3 +38,63 @@ button:hover { opacity: 0.9; transform: translateY(-1px); }
 .badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; }
 .status-rodando { background: #fef3c7; color: #92400e; }
 .status-limpo { background: #dcfce7; color: #166534; }
+
+.modal { 
+    display:none; 
+    position:fixed; 
+    top:0; 
+    left:0; 
+    width:100%; 
+    height:100%; 
+    background:rgba(0,0,0,0.6); 
+    backdrop-filter: blur(4px); 
+    z-index: 1000;
+}
+
+.modal-content { 
+    background:white; 
+    width:95%; /* Quase toda a largura no mobile */
+    max-width:500px; 
+    margin: 20px auto; 
+    padding: 20px; 
+    border-radius: 16px; 
+    position: relative;
+    max-height: 90vh; /* Não deixa o modal ser maior que a tela */
+    display: flex;
+    flex-direction: column;
+}
+
+#linhas-prateleira {
+    overflow-y: auto; /* Ativa o scroll apenas aqui dentro */
+    flex-grow: 1; 
+    margin-bottom: 15px;
+    padding-right: 5px; /* Espaço para a barra de scroll não tampar os botões */
+}
+
+/* Ajuste nos inputs para não quebrarem no mobile */
+.linha-input { 
+    display: grid; 
+    grid-template-columns: 1.5fr 1fr 1.2fr auto; 
+    gap: 8px; 
+    margin-bottom: 10px; 
+    background: #f1f5f9; 
+    padding: 8px; 
+    border-radius: 8px; 
+    align-items: center;
+}
+
+.linha-input input, .linha-input select {
+    font-size: 14px; /* Evita zoom automático no iOS */
+    padding: 8px;
+    width: 100%;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+}
+
+.modal-footer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #eee;
+}
