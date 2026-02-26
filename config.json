@@ -1,0 +1,29 @@
+{
+  "secoes": [
+    { "id": 1, "nome": "Paredão de Ofertas" },
+    { "id": 2, "nome": "ChckStand" },
+    { "id": 3, "nome": "Corredor Cereais" },
+    { "id": 4, "nome": "Corredor de Perfumaria" },
+    { "id": 5, "nome": "Corredor de Limpeza" },
+    { "id": 6, "nome": "Corredor de Café e Papel Higiênico" },
+    { "id": 7, "nome": "Corredor de Leite e Biscoitos" },
+    { "id": 8, "nome": "Corredor de Chocolate e Bebidas" },
+    { "id": 9, "nome": "Cooler" },
+    { "id": 10, "nome": "Corredor Light e Diet" },
+    { "id": 11, "nome": "Vascas de FLV" },
+    { "id": 12, "nome": "Geladeira de FLV e Frios Laticinios" },
+    { "id": 13, "nome": "Corredor de Massas e Molhos" },
+    { "id": 14, "nome": "Freezer de Congelados" },
+    { "id": 15, "nome": "Prateleira de Pães Industrias" },
+    { "id": 16, "nome": "Ponto de Gondola" },
+    { "id": 17, "nome": "Freezer de Queijos e Manteiga" },
+    { "id": 18, "nome": "Expositor de Ovos" },
+    { "id": 19, "nome": "Expsoitor de Banana" },
+    { "id": 20, "nome": "Geladeira Monster" },
+    { "id": 21, "nome": "Geladeira Coca" },
+    { "id": 22, "nome": "Geladeira Padaria" },
+    { "id": 23, "nome": "Etiqueta Grande" },
+    { "id": 24, "nome": "Gaveta da Gerência" },
+    { "id": 25, "nome": "Quebrada" }
+  ]
+}
