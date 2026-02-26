@@ -8,12 +8,12 @@
 </head>
 <body>
     <div class="container">
-        <header style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-            <h1 style="font-size:1rem;">Inventário</h1>
-            <button onclick="location.href='hub.html'" style="padding:5px 10px; border-radius:5px; border:1px solid #ccc; background:none;">Sair</button>
+        <header>
+            <h1>Inventário</h1>
+            <button onclick="location.href='hub.html'" class="btn-outline">Sair</button>
         </header>
 
-        <div class="table-container">
+        <div class="card" style="padding:0; overflow: hidden;">
             <table>
                 <thead>
                     <tr>
@@ -28,17 +28,24 @@
             </table>
         </div>
 
-        <button onclick="finalizar()" class="btn-success" style="width:100%; margin-top:15px;">FINALIZAR INVENTÁRIO</button>
+        <button onclick="finalizar()" class="btn-success">FINALIZAR INVENTÁRIO</button>
     </div>
 
-    <div id="modalContagem" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000;">
-        <div class="modal-content" style="background:white; border-radius:10px;">
-            <h2 id="modal-titulo" style="font-size:1rem; margin-top:0;"></h2>
-            <div id="linhas-prateleira" style="max-height:60vh; overflow-y:auto;"></div>
-            <button onclick="adicionarLinha()" style="width:100%; padding:10px; margin:10px 0; border:1px dashed #4f46e5; color:#4f46e5; background:none; border-radius:5px;">+ Prateleira</button>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
-                <button onclick="fecharModal()" style="padding:10px; background:#eee; border:none; border-radius:5px;">Sair</button>
-                <button onclick="salvarModal()" class="btn-primary">Salvar</button>
+    <div id="modalContagem" class="modal">
+        <div class="modal-content">
+            <h2 id="modal-titulo"></h2>
+            
+            <input type="hidden" id="modal-id-secao">
+            
+            <div id="linhas-prateleira"></div>
+
+            <button onclick="adicionarLinha()" class="btn-outline" style="width:100%; margin-bottom: 10px;">
+                + Adicionar Prateleira
+            </button>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px">
+                <button onclick="fecharModal()" class="btn-outline">Cancelar</button>
+                <button onclick="salvarModal()" class="btn-primary">Salvar Seção</button>
             </div>
         </div>
     </div>
