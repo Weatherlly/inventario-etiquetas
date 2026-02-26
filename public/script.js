@@ -2,18 +2,26 @@ let secoesCache = [];
 
 async function carregarTabela() {
     const res = await fetch('/api/secoes');
-    secoesCache = await res.json();
-    document.getElementById('tabela-corpo').innerHTML = secoesCache.map(s => `
-        <tr>
-            <td><strong>${s.nome}</strong></td>
+    const secoes = await res.json();
+    const corpo = document.getElementById('tabela-corpo');
+    corpo.innerHTML = '';
+
+    secoes.forEach(s => {
+        const tr = document.createElement('tr');
+        // Define cores para a diferença (opcional)
+        const corDif = s.diferenca < 0 ? 'color:red' : (s.diferenca > 0 ? 'color:green' : '');
+        
+        tr.innerHTML = `
+            <td>${s.nome}</td>
             <td>${s.referencia}</td>
-            <td style="font-weight:bold">${s.contagem_atual}</td>
-            <td style="color: ${s.diferenca < 0 ? 'var(--danger)' : 'var(--success)'}; font-weight:bold">
-                ${s.diferenca > 0 ? '+' : ''}${s.diferenca}
+            <td>${s.contagem_atual}</td>
+            <td style="${corDif}">${s.diferenca}</td>
+            <td>
+                <button class="btn-primary btn-tab" onclick="abrirModal(${s.id}, '${s.nome}')">Contar</button>
             </td>
-            <td><button class="btn-primary" style="padding:6px 12px" onclick="abrirModal(${s.id})">Contar</button></td>
-        </tr>
-    `).join('');
+        `;
+        corpo.appendChild(tr);
+    });
 }
 
 function abrirModal(id) {

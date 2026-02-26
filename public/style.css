@@ -2,99 +2,90 @@
     --primary: #4f46e5;
     --success: #10b981;
     --danger: #ef4444;
-    --warning: #f59e0b;
     --bg: #f8fafc;
     --text: #1e293b;
 }
 
-body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
-.container { max-width: 1000px; margin: auto; }
-
-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-h1 { font-size: 1.5rem; margin: 0; font-weight: 700; }
-
-/* Cards */
-.card { background: white; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); padding: 20px; margin-bottom: 20px; }
-.card-status { text-align: center; border: 2px dashed #cbd5e1; }
-
-/* Tables */
-table { width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; }
-th { background: #f1f5f9; padding: 15px; text-align: left; font-size: 0.85rem; text-transform: uppercase; color: #64748b; }
-td { padding: 15px; border-top: 1px solid #f1f5f9; }
-
-/* Buttons */
-button { cursor: pointer; border-radius: 8px; border: none; font-weight: 600; padding: 10px 16px; transition: all 0.2s; }
-.btn-primary { background: var(--primary); color: white; }
-.btn-success { background: var(--success); color: white; }
-.btn-outline { background: transparent; border: 1px solid #cbd5e1; }
-button:hover { opacity: 0.9; transform: translateY(-1px); }
-
-/* Modais */
-.modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 100; }
-.modal-content { background:white; width:90%; max-width:600px; margin:50px auto; padding:25px; border-radius:16px; position:relative; }
-.linha-input { display: grid; grid-template-columns: 2fr 1fr 1.5fr auto; gap: 10px; margin-bottom: 12px; background: #f8fafc; padding: 10px; border-radius: 8px; }
-
-/* Badges */
-.badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; }
-.status-rodando { background: #fef3c7; color: #92400e; }
-.status-limpo { background: #dcfce7; color: #166534; }
-
-.modal { 
-    display:none; 
-    position:fixed; 
-    top:0; 
-    left:0; 
-    width:100%; 
-    height:100%; 
-    background:rgba(0,0,0,0.6); 
-    backdrop-filter: blur(4px); 
-    z-index: 1000;
+* { 
+    box-sizing: border-box; 
+    -webkit-tap-highlight-color: transparent;
 }
 
-.modal-content { 
-    background:white; 
-    width:95%; /* Quase toda a largura no mobile */
-    max-width:500px; 
-    margin: 20px auto; 
-    padding: 20px; 
-    border-radius: 16px; 
-    position: relative;
-    max-height: 90vh; /* Não deixa o modal ser maior que a tela */
-    display: flex;
-    flex-direction: column;
+body { 
+    font-family: 'Inter', sans-serif; 
+    background: var(--bg); 
+    color: var(--text); 
+    margin: 0; 
+    padding: 8px; /* Reduzido para ganhar espaço */
+    width: 100vw;
+    overflow-x: hidden; /* Proíbe a rolagem lateral */
 }
 
-#linhas-prateleira {
-    overflow-y: auto; /* Ativa o scroll apenas aqui dentro */
-    flex-grow: 1; 
-    margin-bottom: 15px;
-    padding-right: 5px; /* Espaço para a barra de scroll não tampar os botões */
+.container { 
+    width: 100%; 
+    max-width: 100%; 
+    margin: auto; 
 }
 
-/* Ajuste nos inputs para não quebrarem no mobile */
-.linha-input { 
-    display: grid; 
-    grid-template-columns: 1.5fr 1fr 1.2fr auto; 
-    gap: 8px; 
-    margin-bottom: 10px; 
-    background: #f1f5f9; 
-    padding: 8px; 
-    border-radius: 8px; 
-    align-items: center;
+/* Tabela Ultra Compacta */
+.table-container { 
+    width: 100%; 
+    background: white; 
+    border-radius: 8px;
+    overflow: hidden;
 }
 
-.linha-input input, .linha-input select {
-    font-size: 14px; /* Evita zoom automático no iOS */
-    padding: 8px;
+table { 
+    width: 100%; 
+    border-collapse: collapse; 
+    table-layout: fixed; /* Força o respeito às larguras das colunas */
+}
+
+th, td { 
+    padding: 8px 4px; /* Espaçamento mínimo */
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 0.8rem; /* Fonte menor para caber tudo */
+    text-align: center;
+    word-wrap: break-word; /* Quebra o texto se for muito longo */
+}
+
+th { background: #f1f5f9; color: #64748b; font-weight: bold; }
+
+/* Larguras Proporcionais (Total 100%) */
+th:nth-child(1), td:nth-child(1) { width: 35%; text-align: left; padding-left: 8px; } /* Seção */
+th:nth-child(2), td:nth-child(2) { width: 15%; } /* Ref */
+th:nth-child(3), td:nth-child(3) { width: 15%; } /* Qtd */
+th:nth-child(4), td:nth-child(4) { width: 15%; } /* Dif */
+th:nth-child(5), td:nth-child(5) { width: 20%; } /* Ação */
+
+/* Botões pequenos para a tabela */
+.btn-tab {
+    padding: 6px 4px;
+    font-size: 0.75rem;
     width: 100%;
-    border: 1px solid #cbd5e1;
-    border-radius: 4px;
 }
 
-.modal-footer {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    padding-top: 10px;
-    border-top: 1px solid #eee;
+/* Ajustes do Modal para não vazar */
+.modal-content { 
+    width: 98%; 
+    max-width: 400px; 
+    margin: 5vh auto; 
+    padding: 12px; 
 }
+
+.linha-input { 
+    display: flex; 
+    gap: 4px; 
+    margin-bottom: 6px; 
+    align-items: center; 
+}
+
+.linha-input input, .linha-input select { 
+    font-size: 0.8rem; 
+    padding: 5px; 
+    min-width: 0; /* Permite que o flex shrink funcione */
+    flex: 1; 
+}
+
+.btn-primary { background: var(--primary); color: white; border: none; padding: 10px; border-radius: 6px; }
+.btn-success { background: var(--success); color: white; border: none; padding: 12px; border-radius: 6px; font-weight: bold; }
