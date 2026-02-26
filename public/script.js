@@ -1,88 +1,111 @@
-let secoesCache = [];
-
+// Função principal para carregar a tabela
 async function carregarTabela() {
-    const res = await fetch('/api/secoes');
-    const secoes = await res.json();
-    const corpo = document.getElementById('tabela-corpo');
-    corpo.innerHTML = '';
-
-    secoes.forEach(s => {
-        const tr = document.createElement('tr');
-        // Define cores para a diferença (opcional)
-        const corDif = s.diferenca < 0 ? 'color:red' : (s.diferenca > 0 ? 'color:green' : '');
+    try {
+        const res = await fetch('/api/secoes');
+        const secoes = await res.json();
+        const corpo = document.getElementById('tabela-corpo');
         
-        tr.innerHTML = `
-            <td>${s.nome}</td>
-            <td>${s.referencia}</td>
-            <td>${s.contagem_atual}</td>
-            <td style="${corDif}">${s.diferenca}</td>
-            <td>
-                <button class="btn-primary btn-tab" onclick="abrirModal(${s.id}, '${s.nome}')">Contar</button>
-            </td>
-        `;
-        corpo.appendChild(tr);
-    });
+        if (!corpo) return;
+        corpo.innerHTML = '';
+
+        secoes.forEach(s => {
+            const tr = document.createElement('tr');
+            
+            // Lógica de cores para a diferença
+            let estiloDif = "";
+            if (s.diferenca < 0) estiloDif = "color: var(--danger); font-weight: bold;";
+            if (s.diferenca > 0) estiloDif = "color: var(--success); font-weight: bold;";
+
+            tr.innerHTML = `
+                <td>${s.nome}</td>
+                <td>${s.referencia}</td>
+                <td>${s.contagem_atual}</td>
+                <td style="${estiloDif}">${s.diferenca}</td>
+                <td>
+                    <button class="btn-primary btn-tab" onclick="abrirModal(${s.id}, '${s.nome}')">Contar</button>
+                </td>
+            `;
+            corpo.appendChild(tr);
+        });
+    } catch (erro) {
+        console.error("Erro ao carregar tabela:", erro);
+    }
 }
 
-function abrirModal(id) {
-    const secao = secoesCache.find(x => x.id === id);
-    document.getElementById('modal-titulo').innerText = `Seção: ${secao.nome}`;
+// Função para abrir o modal e carregar as prateleiras existentes
+async function abrirModal(id, nome) {
+    const modal = document.getElementById('modalContagem');
+    document.getElementById('modal-titulo').innerText = nome;
     document.getElementById('modal-id-secao').value = id;
     const container = document.getElementById('linhas-prateleira');
     container.innerHTML = '';
 
-    if (secao.detalhes && secao.detalhes.length > 0) {
-        secao.detalhes.forEach(d => adicionarLinha(d.identificador, d.quantidade, d.status));
+    // Buscar dados atuais para preencher o modal
+    const res = await fetch('/api/secoes');
+    const secoes = await res.json();
+    const secao = secoes.find(s => s.id === id);
+
+    if (secao && secao.detalhes && secao.detalhes.length > 0) {
+        secao.detalhes.forEach(d => adicionarLinha(d.nome, d.quantidade, d.status));
     } else {
-        adicionarLinha();
+        adicionarLinha(); // Adiciona uma linha vazia se não houver dados
     }
-    document.getElementById('modalContagem').style.display = 'block';
+
+    modal.style.display = 'block';
 }
 
-function adicionarLinha(nome='', qtd=0, status='Funcionando') {
+function fecharModal() {
+    document.getElementById('modalContagem').style.display = 'none';
+}
+
+function adicionarLinha(nome = '', qtd = '', status = 'Funcionando') {
     const div = document.createElement('div');
     div.className = 'linha-input';
     div.innerHTML = `
         <input type="text" placeholder="Prat." class="p-nome" value="${nome}">
         <input type="number" placeholder="Qtd" class="p-qtd" value="${qtd}" inputmode="numeric">
         <select class="p-status">
-            <option value="Funcionando" ${status==='Funcionando'?'selected':''}>OK</option>
-            <option value="Quebrada" ${status==='Quebrada'?'selected':''}>FALHA</option>
+            <option value="Funcionando" ${status === 'Funcionando' ? 'selected' : ''}>OK</option>
+            <option value="Quebrada" ${status === 'Quebrada' ? 'selected' : ''}>FALHA</option>
         </select>
-        <button onclick="this.parentElement.remove()" style="color:var(--danger); background:none; font-size:1.5rem; padding:0 5px;">&times;</button>
+        <button onclick="this.parentElement.remove()" style="color:var(--danger); background:none; font-size:1.2rem;">&times;</button>
     `;
     document.getElementById('linhas-prateleira').appendChild(div);
-    
-    // Auto-scroll para a nova linha adicionada
-    const container = document.getElementById('linhas-prateleira');
-    container.scrollTop = container.scrollHeight;
 }
 
 async function salvarModal() {
     const id = document.getElementById('modal-id-secao').value;
     const linhas = document.querySelectorAll('.linha-input');
-    const contagens = Array.from(linhas).map(l => ({
-        identificador: l.querySelector('.p-nome').value || "Geral",
-        quantidade: parseInt(l.querySelector('.p-qtd').value) || 0,
-        status: l.querySelector('.p-status').value
-    }));
+    const contagens = [];
+
+    linhas.forEach(linha => {
+        const nome = linha.querySelector('.p-nome').value;
+        const quantidade = linha.querySelector('.p-qtd').value;
+        const status = linha.querySelector('.p-status').value;
+        if (nome || quantidade) {
+            contagens.push({ nome, quantidade, status });
+        }
+    });
 
     await fetch('/api/salvar-rascunho', {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ secao_id: id, contagens })
     });
+
     fecharModal();
     carregarTabela();
 }
 
-function fecharModal() { document.getElementById('modalContagem').style.display = 'none'; }
-
 async function finalizar() {
-    if (confirm("Deseja encerrar este inventário? As referências serão atualizadas.")) {
-        await fetch('/api/finalizar', { method: 'POST' });
+    if (!confirm("Deseja finalizar o inventário e salvar no histórico?")) return;
+    
+    const res = await fetch('/api/finalizar', { method: 'POST' });
+    if (res.ok) {
+        alert("Inventário finalizado com sucesso!");
         location.href = 'hub.html';
     }
 }
 
+// Iniciar a tabela ao carregar a página
 carregarTabela();
