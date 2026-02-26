@@ -6,86 +6,119 @@
     --text: #1e293b;
 }
 
+/* O segredo para não extravasar está aqui */
 * { 
     box-sizing: border-box; 
-    -webkit-tap-highlight-color: transparent;
 }
 
 body { 
-    font-family: 'Inter', sans-serif; 
+    font-family: sans-serif; 
     background: var(--bg); 
     color: var(--text); 
     margin: 0; 
-    padding: 8px; /* Reduzido para ganhar espaço */
-    width: 100vw;
-    overflow-x: hidden; /* Proíbe a rolagem lateral */
+    padding: 15px;
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden; /* Impede rolagem lateral */
 }
 
 .container { 
-    width: 100%; 
-    max-width: 100%; 
+    width: 100%;
     margin: auto; 
 }
 
-/* Tabela Ultra Compacta */
-.table-container { 
-    width: 100%; 
+header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 20px; 
+}
+
+/* Cards do seu Hub original */
+.card { 
     background: white; 
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-table { 
-    width: 100%; 
-    border-collapse: collapse; 
-    table-layout: fixed; /* Força o respeito às larguras das colunas */
-}
-
-th, td { 
-    padding: 8px 4px; /* Espaçamento mínimo */
-    border-bottom: 1px solid #f1f5f9;
-    font-size: 0.8rem; /* Fonte menor para caber tudo */
-    text-align: center;
-    word-wrap: break-word; /* Quebra o texto se for muito longo */
-}
-
-th { background: #f1f5f9; color: #64748b; font-weight: bold; }
-
-/* Larguras Proporcionais (Total 100%) */
-th:nth-child(1), td:nth-child(1) { width: 35%; text-align: left; padding-left: 8px; } /* Seção */
-th:nth-child(2), td:nth-child(2) { width: 15%; } /* Ref */
-th:nth-child(3), td:nth-child(3) { width: 15%; } /* Qtd */
-th:nth-child(4), td:nth-child(4) { width: 15%; } /* Dif */
-th:nth-child(5), td:nth-child(5) { width: 20%; } /* Ação */
-
-/* Botões pequenos para a tabela */
-.btn-tab {
-    padding: 6px 4px;
-    font-size: 0.75rem;
+    padding: 20px; 
+    border-radius: 10px; 
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+    margin-bottom: 20px;
     width: 100%;
 }
 
-/* Ajustes do Modal para não vazar */
+.card-status { text-align: center; border: 2px dashed #ccc; }
+
+/* Tabela com ajuste de escala */
+table { 
+    width: 100%; 
+    border-collapse: collapse; 
+    margin-top: 10px;
+    font-size: 0.85rem; /* Diminuído levemente para caber tudo no celular */
+}
+
+th, td { 
+    border: 1px solid #ddd; 
+    padding: 8px 4px; /* Padding reduzido nas laterais */
+    text-align: center;
+    word-break: break-word; /* Quebra palavras longas se necessário */
+}
+
+th { background: #f4f4f4; }
+
+/* Botões */
+button { 
+    padding: 10px; 
+    cursor: pointer; 
+    border-radius: 5px; 
+    border: none; 
+}
+
+.btn-primary { background: var(--primary); color: white; }
+.btn-success { background: var(--success); color: white; }
+.btn-outline { background: transparent; border: 1px solid #ccc; }
+
+/* Modal Original com Scroll Interno */
+.modal { 
+    display:none; 
+    position:fixed; 
+    top:0; 
+    left:0; 
+    width:100%; 
+    height:100%; 
+    background:rgba(0,0,0,0.5); 
+    z-index: 1000;
+}
+
 .modal-content { 
-    width: 98%; 
-    max-width: 400px; 
-    margin: 5vh auto; 
-    padding: 12px; 
+    background:white; 
+    width: 95%;
+    max-width: 500px;
+    margin: 5% auto; 
+    padding: 20px; 
+    border-radius: 10px;
+    max-height: 90vh; /* Não deixa o modal sair da tela */
+    display: flex;
+    flex-direction: column;
+}
+
+#linhas-prateleira {
+    overflow-y: auto; /* Scroll dentro do modal */
+    margin-bottom: 15px;
 }
 
 .linha-input { 
     display: flex; 
-    gap: 4px; 
-    margin-bottom: 6px; 
-    align-items: center; 
+    gap: 5px; 
+    margin-bottom: 10px; 
+    align-items: center;
 }
 
-.linha-input input, .linha-input select { 
-    font-size: 0.8rem; 
-    padding: 5px; 
-    min-width: 0; /* Permite que o flex shrink funcione */
-    flex: 1; 
+.linha-input input, .linha-input select {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    min-width: 0; /* Permite encolher no flexbox */
+    flex: 1;
 }
 
-.btn-primary { background: var(--primary); color: white; border: none; padding: 10px; border-radius: 6px; }
-.btn-success { background: var(--success); color: white; border: none; padding: 12px; border-radius: 6px; font-weight: bold; }
+.badge { padding: 5px 10px; border-radius: 15px; font-size: 0.8rem; font-weight: bold; }
+.status-rodando { background: #fee2e2; color: #ef4444; }
+.status-limpo { background: #dcfce7; color: #10b981; }
